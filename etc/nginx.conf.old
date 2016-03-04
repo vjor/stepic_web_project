@@ -6,6 +6,7 @@ include conf/mime.types;
 	log_format simple '$remote_addr $request $status';
 	server {
 		listen 80;
+		server_name one.example.com www.one.example.com;
 
 		access_log nginx.access.log simple;
 		location ^~  /uploads/ {
