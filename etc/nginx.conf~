@@ -1,4 +1,3 @@
-user box box;
 #error_log /home/box/web/nginx.error.log info;
 
 #	log_format simple '$remote_addr $request $status';
