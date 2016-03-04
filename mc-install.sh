@@ -1,2 +1,2 @@
-sudo apt-get update
+rem sudo apt-get update
 sudo apt-get install mc
