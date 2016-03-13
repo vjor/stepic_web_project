@@ -1,0 +1,9 @@
+<nav><ul class="pagination">
+{% for q in qs %}
+    <li>
+	{{q.title}} 
+	<a href="{{ paginator.baseurl }}{{ q.id }}/">
+	{{ q.id }}</a>
+    </li>
+{% endfor %}
+</ul></nav>
