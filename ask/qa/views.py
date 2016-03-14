@@ -8,7 +8,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 #from django.core.exceptions import  DoesNotExist
 from django.http         import Http404 
 
-from .models import Question,Answer
+from django.http import HttpResponseRedirect
+
+from .models import Question,Answer, AskForm, AnswerForm
 
 
 def test(request, *args, **kwargs):
@@ -78,6 +80,45 @@ def qs_ans(request, slug ):
 
 
 
+def qs_add(request):
+
+    if request.method == "POST":
+		form = AskForm(request.POST)
+
+		if form.is_valid():
+			qspost = form.save()
+			#		url = post.get_url()
+			url = '/question/%d' %  qspost.pk
+	
+			return HttpResponseRedirect(url)
+			#return HttpResponseRedirect(reverse('/question:results', args=(qspost.id,)))
+    else:
+		form = AskForm()
+		return render(request, 'qs_add.html', {
+		'form': form,
+		})
+
+
+def ans_add(request):
+
+    if request.method == "POST":
+		form = AnswerForm(request.POST)
+
+		if form.is_valid():
+			ans = form.save()
+			#		url = post.get_url()
+			url = '/question/%d' %  ans.question_id
+			#url = '/question/1' 
+			return HttpResponseRedirect(url)
+			#return HttpResponseRedirect(reverse('/question:results', args=(qspost.id,)))
+    else:
+		form = AnswerForm()
+		return render(request, 'ans_add.html', {
+		'form': form,
+		})
+
+
+
 
 
 def paginate(request, qs):
@@ -97,3 +138,4 @@ def paginate(request, qs):
     except EmptyPage:
 	page = paginator.page(paginator.num_pages)
     return page
+

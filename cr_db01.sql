@@ -6,7 +6,7 @@
 DROP DATABASE `myweb`;
 DROP User 'myweb'@'localhost';
 DROP USER 'admin'@'%';
-DROP USER 'box'@'localhost';
+
 DROP USER 'admin'@'localhost';
 
 CREATE DATABASE   `myweb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -31,9 +31,9 @@ GRANT ALL PRIVILEGES ON myweb.* TO 'admin'@'localhost' WITH GRANT OPTION;
 
 
 
-CREATE DATABASE box_django;
-CREATE USER 'box'@'localhost' IDENTIFIED BY '1234';
+-- CREATE DATABASE box_django;
+-- CREATE USER 'box'@'localhost' IDENTIFIED BY '1234';
 
-GRANT ALL PRIVILEGES ON box_django.* TO 'box'@'localhost';
+-- GRANT ALL PRIVILEGES ON box_django.* TO 'box'@'localhost';
 
 COMMIT;
