@@ -8,8 +8,8 @@ class Question (models.Model):
     text  = models.TextField()
     added_at = models.DateTimeField(null=True)
     rating   = models.IntegerField(null=True)
-    author = models.CharField(max_length=255)
-    likes =  models.ForeignKey(User, null=True)
+    author = models.CharField(max_length=255,default="1")
+    likes =  models.ForeignKey(User, null=True, default=1)
 
     def __unicode__(self):
 	return self.title
@@ -19,8 +19,8 @@ class Question (models.Model):
 class Answer (models.Model):
     text  = models.TextField()
     added_at = models.DateTimeField(null=True)
-    author = models.CharField(max_length=255)
-    question   = models.ForeignKey(Question, null=True, on_delete=models.SET_NULL)
+    author = models.CharField(max_length=255,default="1")
+    question = models.ForeignKey(Question, null=True, on_delete=models.SET_NULL)
     class Meta:
 	ordering = ['-added_at']
 

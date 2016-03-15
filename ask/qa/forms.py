@@ -1,6 +1,6 @@
 from django.db import models
 from django import forms
-from .models import *
+from .models import Question,Answer
 
 class AskForm(forms.Form):
     title = forms.CharField(max_length=100)
@@ -17,19 +17,25 @@ class AskForm(forms.Form):
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
-    question_id  =forms.IntegerField()
+    question  = forms.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+	super(AnswerForm, self).__init__(*args, **kwargs)
+
     def clean_text(self):
 	text = self.cleaned_data['text']
 	if len(text)>3000:
 	    raise forms.ValidationError("Error long text")
 	return text +   "\n!Thank you for your Answer!."
-    def clean_question_id(self):
-	question_id = self.cleaned_data['question_id']
+
+    def clean_question(self):
+	question = self.cleaned_data['question']
 	try:
-           qs = Question.objects.get(id=question_id) 
+           qs = Question.objects.get(id=question)
 	except Question.DoesNotExist:
-	     raise forms.ValidationError("not found question %d" %question_id)
-	return question_id
+	     raise forms.ValidationError("not found question %d" %question)
+	return qs
+
     def save(self):
 	ans = Answer(**self.cleaned_data)
 	ans.save()

@@ -103,20 +103,20 @@ def qs_add(request):
 def ans_add(request):
 
     if request.method == "POST":
-		form = AnswerForm(request.POST)
+	form = AnswerForm(request.POST)
 
-		if form.is_valid():
-			ans = form.save()
-			#		url = post.get_url()
-			url = '/question/%d' %  ans.question_id
-			#url = '/question/1' 
-			return HttpResponseRedirect(url)
-			#return HttpResponseRedirect(reverse('/question:results', args=(qspost.id,)))
+	if form.is_valid():
+		ans = form.save()
+		#		url = post.get_url()
+		url = '/question/%d/' %  ans.question_id
+		#url = '/question/2/' 
+		return HttpResponseRedirect(url)
+		#return HttpResponseRedirect(reverse('/question:results', args=(qspost.id,)))
     else:
-		form = AnswerForm()
-		return render(request, 'ans_add.html', {
-		'form': form,
-		})
+	form = AnswerForm()
+	return render(request, 'ans_add.html', {
+	'form': form,
+	})
 
 
 
