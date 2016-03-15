@@ -10,7 +10,8 @@ from django.http         import Http404
 
 from django.http import HttpResponseRedirect
 
-from .models import Question,Answer, AskForm, AnswerForm
+from .models import Question,Answer
+from .forms  import  AskForm, AnswerForm
 
 
 def test(request, *args, **kwargs):
