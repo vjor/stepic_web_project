@@ -11,8 +11,8 @@ from django.http         import Http404
 from django.http import HttpResponseRedirect
 
 from .models import Question,Answer
-from .forms  import  AskForm, AnswerForm
-
+from .forms  import  AskForm, AnswerForm, SignForm, LoginForm
+from django.contrib.auth import authenticate, login
 
 def test(request, *args, **kwargs):
     return HttpResponse('OK1')
@@ -118,9 +118,98 @@ def ans_add(request):
 	'form': form,
 	})
 
+def sign_add(request):
+
+    if request.method == "POST":
+	form = SignForm(request.POST)
+
+	if form.is_valid():
+		ss=form.save()
+		url = '/' 
+		return HttpResponseRedirect(url)
+    else:
+	form = SignForm()
+	return render(request, 'form_reg.html', {
+	'form': form,
+	})
+
+def login11(request):
+
+    if request.method == "POST":
+	username = request.POST.get('username')
+	password = request.POST.get('password')
+	url = request.POST.get('continue', '/')
+	sessid = do_login(username, password)
+	if sessid:
+	    response = HttpResponseRedirect(url)
+	    response.set_cookie('sessid', sessid,
+		domain='localhost', httponly=True,
+		expires = datetime.now()+timedelta(days=5)
+		)
+	    return response
+	else:
+	    error = 'error login/pass'
+    else:
+	form = LoginForm()
+	return render(request, 'form_login.html', {
+	'form': form,
+	})
+
+def do_login(login, password):
+    try:
+	user = User.objects.get(login=login)
+    except User.DoesNotExist:
+	return None
+    hashed_pass = salt_and_hash(password)
+    if user.password != hashed_pass:
+	return None
+    session = Session()
+    session.key = generate_long_random_key()
+    session.user = user
+    session.expires = datetime.now() + timedelta(days=5)
+    session.save()
+    return session.key
 
 
 
+def my_login(request):
+
+    if request.method == "POST":
+	form = LoginForm(request.POST)
+        username = request.POST['username']
+	password = request.POST['password']
+	user = authenticate(username=username, password=password)
+
+#	user= form.get_user()
+        if user is not None:
+    	    if user.is_active:
+    		login(request, user)
+		return HttpResponseRedirect('/')
+	else:
+		form.username="11"
+		return HttpResponseRedirect('/login/%s' %username )
+    else:
+	form = LoginForm()
+	return render(request, 'form_login.html', {
+	'form': form,
+	})
+
+
+def my_login1(request):
+     
+        username = request.POST['username']
+	password = request.POST['password']
+	user = authenticate(username=username, password=password)
+	if user is not None:
+    	    if user.is_active:
+        	login(request, user)
+		return HttpResponseRedirect('/')
+            # Redirect to a success page.
+    	    else:
+        	print(" Return a 'disabled account' error message")
+            
+	else:
+    	    print(" Return an 'invalid login' error message.")
 
 def paginate(request, qs):
     try:
