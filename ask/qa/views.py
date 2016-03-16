@@ -85,6 +85,7 @@ def qs_add(request):
 
     if request.method == "POST":
 		form = AskForm(request.POST)
+		form._user = request.user
 
 		if form.is_valid():
 			qspost = form.save()
@@ -92,9 +93,10 @@ def qs_add(request):
 			url = '/question/%d' %  qspost.pk
 	
 			return HttpResponseRedirect(url)
-			#return HttpResponseRedirect(reverse('/question:results', args=(qspost.id,)))
+		else:
+			return HttpResponseRedirect('/login/%s' %form._user)
     else:
-		form = AskForm()
+		form = AskForm("")
 		return render(request, 'qs_add.html', {
 		'form': form,
 		})
@@ -104,6 +106,7 @@ def ans_add(request):
 
     if request.method == "POST":
 	form = AnswerForm(request.POST)
+        form._user = request.user
 
 	if form.is_valid():
 		ans = form.save()
@@ -113,7 +116,7 @@ def ans_add(request):
 		return HttpResponseRedirect(url)
 		#return HttpResponseRedirect(reverse('/question:results', args=(qspost.id,)))
     else:
-	form = AnswerForm()
+	form = AnswerForm("")
 	return render(request, 'ans_add.html', {
 	'form': form,
 	})
@@ -184,6 +187,7 @@ def my_login(request):
         if user is not None:
     	    if user.is_active:
     		login(request, user)
+	
 		return HttpResponseRedirect('/')
 	else:
 		form.username="11"

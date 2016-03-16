@@ -15,15 +15,26 @@ class AskForm(forms.Form):
 	    raise forms.ValidationError("Error")
 	return text +   "\n!Thank you for your question!."
     def save(self):
+	self.cleaned_data['author'] = self._user
+
 	qs = Question(**self.cleaned_data)
 	qs.save()
 	return qs
+
+    def __init__(self, user,*args, **kwargs):
+	self._user = user
+	super(AskForm, self).__init__(*args,**kwargs)
+
+    def clean(self):
+	if self._user.is_banned:
+	    raise ValidationError('acsess denided')
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
     question  = forms.IntegerField()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self,user, *args, **kwargs):
+	self._user = user
 	super(AnswerForm, self).__init__(*args, **kwargs)
 
     def clean_text(self):
@@ -41,6 +52,8 @@ class AnswerForm(forms.Form):
 	return qs
 
     def save(self):
+	self.cleaned_data['author'] = self._user
+
 	ans = Answer(**self.cleaned_data)
 	ans.save()
 	return ans
